@@ -1,0 +1,42 @@
+addon selenium version 4.101.0.0
+addon core version 4.101.0.0
+addon language version 4.103.0.0
+
+♥timeoutselenium = 45000
+list.create ‴‴ separator ❚ result ♥currencyNames
+list.create ‴‴ separator ❚ result ♥price
+
+selenium.open chrome url www.coinmarketcap.com
+delay 2
+call GetCurrencyNames
+call GetPrice
+call saveasPDF
+
+procedure GetCurrencyNames
+    for ♥i from 1 to 100
+        selenium.gettext search /html/body/div[2]/div[2]/div[1]/div[2]/div/div[2]/div/table/tbody/tr[♥i]/td[2]/a by xpath result ♥currencyName
+        list.add ♥currencyNames toadd ♥currencyName timeout 25000
+    end
+end
+
+procedure GetPrice
+    for ♥i from 1 to 100
+        selenium.gettext search /html/body/div[2]/div[2]/div[1]/div[2]/div/div[2]/div/table/tbody/tr[♥i]/td[4]/a by xpath result ♥priceValue
+        list.add ♥price toadd ♥priceValue timeout 25000
+    end
+end
+
+procedure saveasPDF
+    program E:\Typora\Typora.exe
+    waitfor.window ‴Untitled - Typora‴
+    keyboard ‴# Today's Crypto Values‴⋘ENTER⋙
+    keyboard ‴| Name | Price |‴⋘ENTER⋙
+    for ♥i from 1 to 100
+        keyboard ‴♥currencyNames⟦♥i⟧ ⋘TAB⋙ ♥price⟦♥i⟧ ⋘CTRL+ENTER⋙‴
+    end
+    keyboard ⋘ALT+F⋙
+    keyboard ⋘E⋙
+    keyboard ⋘P⋙
+    keyboard ⋘ENTER⋙
+    keyboard ⋘ENTER⋙
+end

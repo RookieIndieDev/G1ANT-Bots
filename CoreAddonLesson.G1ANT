@@ -1,0 +1,92 @@
+addon core version 4.101.0.0
+addon language version 4.103.0.0
+
+
+-COMMANDS
+-break
+dialog ‴Entering a loop‴
+for ♥i from 1 to 100
+    break
+end
+dialog ‴Broke out of the loop‴
+-call & procedure
+call TestProcedure
+procedure TestProcedure
+    dialog ‴This is a procedure‴
+end
+-chrome
+ chrome ‴www.google.com‴
+-delay
+   delay 5
+   dialog ‴This is displayed after a 5 second delay!‴
+-dialog and dialog.ask
+    dialog.ask ‴Enter your name‴ result ♥yourName
+    dialog ‴Your Name is: ♥yourName‴
+-if and else if
+    dialog.ask ‴Enter a number‴ result ♥num
+    if ♥num=="2"
+        dialog ‴The number is 2‴
+    else if ♥num=="3"
+        dialog ‴The number is 3‴
+    else 
+        dialog ‴The number is not 2 or 3‴
+    end
+-file commands: copy, delete, download, exists
+    file.download url https://github.com/G1ANT-Robot/G1ANT.Manual/blob/develop/README.md filename ‴C:\Users\Rick Sanchez\Desktop\readme.md‴
+    file.exists ♥environment⟦USERPROFILE⟧\Desktop\readme.md
+    dialog ‴File exists, let's copy the file!‴
+    file.copy path ‴C:\Users\Rick Sanchez\Desktop\readme.md‴ destinationpath ‴C:\Users\Rick Sanchez\Desktop\readme2.md‴
+    dialog ‴Copying done! Let's delete both files.‴
+    file.delete ‴C:\Users\Rick Sanchez\Desktop\readme.md‴
+    file.delete ‴C:\Users\Rick Sanchez\Desktop\readme2.md‴
+    
+-for and foreach
+    for ♥number from 1 to 10
+        dialog ‴Number ♥number‴
+    end
+    ♥numbers = ‴One‴❚‴Two‴❚‴Three‴❚‴Four‴
+    foreach ♥number in ♥numbers
+        dialog ♥number
+    end
+-program
+    program notepad
+
+-keyboard: caps lock, num lock, scroll lock
+    keyboard ‴This is some text‴
+    keyboard.capslock on
+    keyboard ⋘a⋙
+    keyboard.capslock off
+    keyboard ⋘a⋙
+    
+
+-jump and label
+    jump JumpOverText
+    keyboard ‴This is some text‴
+    label JumpOverText
+    keyboard ‴Looks like we jumped over some text!‴
+-window
+    window ✱‴Untitled - Notepad‴✱ style maximize
+-while
+    ♥j = ⟦integer⟧1
+    while ♥j<3
+        dialog ♥j
+        ♥j = ♥j + 1 
+    end
+
+-TRIGGERS
+-file
+-mail
+-schedule
+
+-Variables
+  -clipboard, copy text to clipboard first
+  dialog ♥clipboard
+  -date and dateformat
+  ♥dateformat = yyyy-MM-dd
+  dialog ♥date
+  ♥dateformat = MM/dd/yy
+  dialog ♥date
+  -time and timeformat
+  ♥timeformat = HH:mm
+  dialog ♥time
+  

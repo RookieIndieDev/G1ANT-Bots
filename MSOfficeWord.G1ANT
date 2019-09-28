@@ -1,0 +1,22 @@
+addon msoffice version 4.101.0.0
+addon core version 4.101.0.0
+addon language version 4.103.0.0
+
+
+word.open ♥environment⟦USERPROFILE⟧\Desktop\Test.docx result ♥id1
+word.open result ♥id2
+keyboard ⋘ALT+TAB⋙
+word.switch ♥id1
+word.gettext ♥copiedText
+word.switch ♥id2
+word.inserttext ♥copiedText replacealltext true
+word.replace Some to A wholewords true
+word.save ♥environment⟦USERPROFILE⟧\Desktop\Test1.docx
+word.close
+word.switch ♥id1
+word.close
+
+--outlook Structures
+--OutlookAttachment
+--OutLookFolder
+--OutlookMail

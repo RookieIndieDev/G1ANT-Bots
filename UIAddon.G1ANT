@@ -1,0 +1,22 @@
+addon ui version 4.101.0.0
+addon core version 4.101.0.0
+addon language version 4.103.0.0
+
+program explorer arguments ♥environment⟦USERPROFILE⟧\Desktop
+ui.settext ‴/ui[@name='Desktop']/ui[@id='40965']/descendant::ui[@id='SearchEditBox']‴ text .txt
+delay 5
+keyboard ⋘ALT+F4⋙
+program calc
+program notepad
+waitfor.ui ‴/ui[@name='Untitled - Notepad']‴
+dialog ‴Notepad opened‴
+ui.getrectangle ‴/ui[@name='Untitled - Notepad']‴
+dialog ♥result
+delay 5
+ui.setfocus ‴/ui[@name='Calculator']‴
+delay 5
+keyboard ⋘ALT+F4⋙
+ui.setroot ‴/ui[@name='Untitled - Notepad']‴
+ui.click ‴/ui[@id='MenuBar']/ui[@name='File']‴
+delay 5
+ui.click wpath ‴/descendant::ui[@name='Close']‴

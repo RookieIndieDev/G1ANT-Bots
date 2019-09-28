@@ -1,0 +1,123 @@
+addon core version 4.101.0.0
+addon language version 4.103.0.0
+
+addon ui version 4.101.0.0
+addon core version 4.101.0.0
+addon language version 4.103.0.0
+
+♥savedirectory= ‴E:\GeneralDev\DST\Data\Tiled\‴
+♥filename=game
+♥iteration = ⟦integer⟧12
+
+
+call StartGimp
+while ⊂♥iteration < 8167⊃
+    ♥iteration = ♥iteration + 1
+    call OpenAndCropImages iter ♥iteration
+end
+
+procedure StartGimp
+keyboard ⋘WIN⋙gimp⋘ENTER⋙
+waitfor.ui ‴/ui[@name='GNU Image Manipulation Program']/descendant::ui[@id='MenuBar']/ui[@name='System']‴ timeout 40000
+end
+
+procedure OpenAndCropImages iter
+    ♥iter=⟦integer⟧♥iter
+    if ♥iter<10
+        ♥fileno=‴0000♥iter‴
+    else if ♥iter<100
+        ♥fileno=‴000♥iter‴
+    else if ♥iter<1000
+        ♥fileno=‴00♥iter‴
+    else
+        ♥fileno=‴0♥iter‴
+    end
+    
+    ♥clipboard = ‴E:\GeneralDev\DST\Data\♥filename♥fileno.png‴
+    keyboard ⋘ALT+F⋙
+    keyboard ⋘DOWN 4⋙
+    keyboard ⋘ENTER⋙
+    delay 1
+    keyboard ⋘CTRL+V⋙
+    delay 1
+    keyboard ⋘ENTER⋙
+    delay 1
+    keyboard ⋘ALT+G⋙
+    keyboard ⋘TAB⋙
+    keyboard 216
+    keyboard ⋘ENTER⋙
+    keyboard ⋘ALT+G⋙
+    keyboard ⋘⋘TAB⋙⋙
+    keyboard 432
+    keyboard ⋘ENTER⋙
+    keyboard ⋘ALT+G⋙
+    keyboard ⋘TAB⋙
+    keyboard 648
+    keyboard ⋘ENTER⋙
+    keyboard ⋘ALT+G⋙
+    keyboard ⋘TAB⋙
+    keyboard 864
+    keyboard ⋘ENTER⋙
+    keyboard ⋘ENTER⋙
+    keyboard ⋘ALT+G⋙
+    keyboard ⋘DOWN⋙
+    keyboard ⋘TAB⋙
+    keyboard 240
+    keyboard ⋘ENTER⋙
+    keyboard ⋘ALT+G⋙
+    keyboard ⋘DOWN⋙
+    keyboard ⋘TAB⋙
+    keyboard 480
+    keyboard ⋘ENTER⋙
+    keyboard ⋘ALT+G⋙
+    keyboard ⋘DOWN⋙
+    keyboard ⋘TAB⋙
+    keyboard 720
+    keyboard ⋘ENTER⋙
+    keyboard ⋘ALT+G⋙
+    keyboard ⋘DOWN⋙
+    keyboard ⋘TAB⋙
+    keyboard 960
+    keyboard ⋘ENTER⋙
+    keyboard ⋘ALT+G⋙
+    keyboard ⋘DOWN⋙
+    keyboard ⋘TAB⋙
+    keyboard 1200
+    keyboard ⋘ENTER⋙
+    keyboard ⋘ALT+G⋙
+    keyboard ⋘DOWN⋙
+    keyboard ⋘TAB⋙
+    keyboard 1440
+    keyboard ⋘ENTER⋙
+    keyboard ⋘ALT+G⋙
+    keyboard ⋘DOWN⋙
+    keyboard ⋘TAB⋙
+    keyboard 1680
+    keyboard ⋘ENTER⋙
+    keyboard ⋘ALT+I⋙
+    keyboard ⋘U⋙
+    ♥clipboard = ♥savedirectory
+    delay 25
+    for ♥i from 1 to 40
+        keyboard ⋘SHIFT+CTRL+E⋙
+        delay 25
+        keyboard ⋘LEFT⋙
+        delay 2
+        keyboard ⋘CTRL+V⋙
+        keyboard ⋘ENTER⋙
+        delay 5
+        keyboard ⋘ENTER⋙
+        delay 2
+        keyboard ⋘CTRL+W⋙
+        keyboard ⋘LEFT⋙
+        keyboard ⋘ENTER⋙
+    end
+    keyboard ⋘ALT+G⋙
+    keyboard ⋘UP⋙
+    keyboard ⋘TAB⋙
+    keyboard ⋘ENTER⋙
+    keyboard ⋘CTRL+W⋙
+    keyboard ⋘LEFT⋙
+    keyboard ⋘ENTER⋙
+end
+

@@ -1,0 +1,42 @@
+addon googledocs version 4.101.0.0
+addon core version 4.101.0.0
+addon language version 4.103.0.0
+
+googlesheet.open 1tHiVE0ALnIixrHm3rDyxQQhLMUiZCzu5KS8Pkg1eGAo result ♥testSheetId
+googlesheet.open 1ZoeFnqAu1v_agEdG6mdcTgaDhlxmn8gXbSY7PF0TMvg result ♥emptySheetId
+call copyColumnNames
+call copyValues
+
+
+
+procedure copyColumnNames
+    googlesheet.switch ♥testSheetId
+    googlesheet.getvalue A1&B1&C1 result ♥colNames
+    googlesheet.switch ♥emptySheetId
+    googlesheet.setvalue range A1 numeric false value ♥colNames⟦1⟧
+    googlesheet.setvalue range B1 numeric false value ♥colNames⟦2⟧
+    googlesheet.setvalue range C1 numeric false value ♥colNames⟦3⟧
+end
+
+procedure copyValues
+    googlesheet.switch ♥testSheetId
+    googlesheet.getvalue A2&A3&A4&A5 result ♥names
+    googlesheet.getvalue B2&B3&B4&B5 result ♥age
+    googlesheet.getvalue C2&C3&C4&C5 result ♥salary
+    googlesheet.switch ♥emptySheetId
+    -entering names
+    googlesheet.setvalue range A2 numeric false value ♥names⟦1⟧
+    googlesheet.setvalue range A3 numeric false value ♥names⟦2⟧
+    googlesheet.setvalue range A4 numeric false value ♥names⟦3⟧
+    googlesheet.setvalue range A5 numeric false value ♥names⟦4⟧
+    -entering age
+    googlesheet.setvalue range B2 value ♥age⟦1⟧
+    googlesheet.setvalue range B3 value ♥age⟦2⟧
+    googlesheet.setvalue range B4 value ♥age⟦3⟧
+    googlesheet.setvalue range B5 value ♥age⟦4⟧
+    -entering salary
+    googlesheet.setvalue range C2 value ♥salary⟦1⟧
+    googlesheet.setvalue range C3 value ♥salary⟦2⟧
+    googlesheet.setvalue range C4 value ♥salary⟦3⟧
+    googlesheet.setvalue range C5 value ♥salary⟦4⟧
+end

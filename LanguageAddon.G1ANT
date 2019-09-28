@@ -1,0 +1,148 @@
+addon net version 4.101.0.0
+addon core version 4.101.0.0
+addon language version 4.103.0.0
+
+--- Boolean
+♥x=⟦bool⟧true
+♥y=false
+dialog ♥y⟦number⟧
+dialog ♥x⟦number⟧
+
+--- Error
+-waitfor.file ♥environment⟦USERPROFILE⟧\Desktop\test.txt timeout 200 errorcall errorproc errorresult ♥errresult
+
+--- Dictionary
+♥entry = ⟦dictionary⟧address❚street
+dialog ♥entry⟦address⟧
+
+--- Float
+♥price = ⟦float⟧399
+dialog ♥price
+♥price_list = ⟦list:float⟧399.99❚19❚458.59❚199
+dialog ♥price_list
+
+--- Integer
+♥number = 19877
+dialog ♥number
+♥number = ♥number + 1
+dialog ♥number
+
+---
+call Attachments
+call DateTime
+call Html
+call Json
+call Xml
+
+--- Jump
+jump start
+dialog ‴Jump over this text‴
+label start
+dialog ‴Congratulations! You've made a jump to the start label!‴
+
+--- List
+♥list = value1❚value2❚value3
+dialog ♥list
+dialog ‴Number of elements in the list: ♥list⟦count⟧‴
+dialog ‴Second Element: ♥list⟦2⟧‴
+♥list⟦2⟧ = value4
+dialog ‴Second Element: ♥list⟦2⟧‴
+
+--- Money
+♥float = ⟦float⟧1,00000000000000000006
+♥money = ⟦money⟧1,00000000000000000006
+program notepad
+keyboard ♥float⋘ENTER⋙♥money
+
+--- Point
+♥point = 1280/720
+dialog ♥point
+
+-- Rectangle
+♥rectangle = 5⫽15⫽100⫽200
+dialog ‴Rectangle Width: ♥rectangle⟦width⟧‴
+dialog ‴Rectangle Height: ♥rectangle⟦height⟧‴
+dialog ‴Rectangle Left: ♥rectangle⟦left⟧‴
+dialog ‴Rectangle Top: ♥rectangle⟦top⟧‴
+dialog ‴Rectangle Right: ♥rectangle⟦right⟧‴
+dialog ‴Rectangle Bottom: ♥rectangle⟦bottom⟧‴
+
+---Timespan
+♥timespan = ⟦timespan⟧1000000100
+dialog ♥timespan
+
+---Time 
+♥timeNow = ⟦time⟧10:30
+dialog ♥timeNow
+♥timeNow = ⟦time⟧12:45:11.250
+dialog ‴It's ♥timeNow⟦minute⟧ minutes past ‴♥timeNow⟦hour⟧
+♥timeNow⟦hour⟧ = 11
+dialog ‴It's exactly ♥time‴
+
+
+---Procedure Defintions
+
+procedure errorproc
+    dialog ‴♥errresult⟦type⟧, ♥errresult⟦message⟧‴
+    error ♥errresult
+end
+
+procedure Attachments
+    ♥host = imap.gmail.com
+    ♥login = ♥credential⟦mail:login⟧
+    ♥password = ♥credential⟦mail:pass⟧
+    ♥sinceDate = ⟦date:dd.MM.yyyy⟧05.09.2019
+    dialog ‴Day: ♥sinceDate⟦day⟧‴
+    dialog ‴Month: ♥sinceDate⟦month⟧‴
+    dialog ‴Year: ♥sinceDate⟦year⟧‴
+     
+    mail.imap host ♥host port 993 login ♥login password ♥password sincedate ♥sinceDate onlyunreadmessages true ignorecertificateerrors true errorcall IgnoreErrors result ♥messagesList
+    dialog ♥messagesList⟦count⟧
+    foreach ♥element in ♥messagesList
+    ♥attachments = ♥element⟦attachments⟧
+    foreach ♥singleAttachment in ♥attachments
+        ♥path = ♥singleAttachment⟦path⟧
+        dialog ‴Path Name: ♥path⟦name⟧, Path Directory: ♥path⟦directory⟧, Extension: ♥path⟦extension⟧‴
+        file.copy path ♥path destinationpath ♥environment⟦USERPROFILE⟧\Desktop\♥singleAttachment⟦name⟧
+    end
+    end
+end
+
+procedure DateTime
+    ♥myDateTime = ⟦datetime⟧27/09/2019 11:26:30
+    dialog ♥myDateTime⟦hour⟧
+    dialog ♥myDateTime⟦year⟧
+    dialog ♥myDateTime⟦dayofyear⟧
+end
+
+procedure Html
+    ♥source = ‴<!doctype html><html lang="en"><head><meta charset="utf-8"/><link rel="shortcut icon" href="/favicon.ico"/><meta name="viewport"     content="width=device-width,initial-scale=1,shrink-to-fit=no"/><meta name="theme-color" content="#000000"/><meta http-equiv="X-UA-Compatible" content="IE=edge"><link rel="manifest" href="/manifest.json"/><title>G1ANT.Manual</title><link href="/static/css/1.dd049548.chunk.css" rel="stylesheet"><link href="/static/css/main.aba137a9.chunk.css" rel="stylesheet"></head><body><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"></div><script src="/static/js/1.d5964837.chunk.js">first script</script><script src="/static/js/main.22ab479a.chunk.js">second script</script></body></html>‴
+    ♥html = ⟦html⟧♥source
+    dialog ♥html⟦//title⟧
+    dialog ♥html⟦//noscript⟧
+    dialog ♥html⟦//body⟧
+    dialog ♥html⟦//script⟧
+    dialog ♥html⟦//script[2]⟧
+end
+
+procedure Json
+    ♥file = ♥environment⟦USERPROFILE⟧\Desktop\json.txt
+    file.download https://support.oneskyapp.com/hc/en-us/article_attachments/202761727/example_2.json filename ♥file
+    text.read ♥file result ♥jsonTxt
+    dialog ♥jsonTxt
+    ♥json = ⟦json⟧♥jsonTxt
+    dialog ♥json⟦quiz.maths.q1.question⟧
+    dialog ♥json⟦quiz.sport.q1.options⟧
+end
+
+procedure Xml
+    ♥source=‴<?xml version="1.0" encoding="UTF-8"?><note><to>Robot</to><from>G1ANT</from><heading>Reminder</heading><body>Don't stop working!</body></note>‴
+    ♥xml = ⟦xml⟧♥source
+    dialog ♥xml
+    dialog ♥xml⟦note⟧
+    dialog ♥xml⟦note/body⟧
+end
+
+procedure IgnoreErrors
+end
+

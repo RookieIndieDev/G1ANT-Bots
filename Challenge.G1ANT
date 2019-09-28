@@ -1,0 +1,364 @@
+addon xlsx version 4.101.0.0
+addon selenium version 4.101.0.0
+addon core version 4.101.0.0
+addon language version 4.103.0.0
+
+call Main
+
+
+-- This method gets the input from the user about what type of connections they want to deal with. 
+
+procedure GetInput
+    -- This line resets the webpage to the connections page, 
+    -- to reset the layout of the elements the way it used to be just so the robot can work, 
+    --refreshing the page doesn't reset it to the orignal layout, so we load that page manually.
+      
+    selenium.seturl ‴https://www.linkedin.com/search/results/people/?facetNetwork=%5B%22F%22%5D&origin=MEMBER_PROFILE_CANNED_SEARCH‴
+    dialog.ask ‴Type 1 for 1st degree connections, 2 for 2nd Degree connections‴ result ♥inputText
+    if ♥inputText=="1"
+        call FirstDegreeConnections
+    else if ♥inputText=="2"
+        call SecondDegreeConnections
+    else
+        dialog ‴Wrong Input, retry‴
+        call GetInput
+    end
+end
+
+
+-- Entry Point
+procedure Main
+    ♥timeoutselenium = 60000
+    list.create result ♥namesList
+    xlsx.open ♥environment⟦USERPROFILE⟧/Desktop/Log.xlsx createifnotexist true accessmode readwrite result ♥log
+    xlsx.setvalue row 1 colindex 1 value ‴Message‴
+    xlsx.setvalue row 1 colindex 2 value ‴Time‴
+    selenium.open chrome url linkedin.com
+    waitfor.window title ✱‴LinkedIn: Log In Or Sign Up‴✱ timeout 10000
+    window ✱‴LinkedIn: Log In Or Sign Up‴✱ style maximize
+    selenium.click search /html/body/nav/a[3] by xpath
+    selenium.type ♥credential⟦linkedin:username⟧ search ‴username‴ by id
+    selenium.type ♥credential⟦linkedin:password⟧ search ‴password‴ by id
+    keyboard ⋘ENTER⋙
+    call AddLogMessage message ‴User Logged In‴ time ♥time
+    -- Waiting in the event of a captcha, wait for the user to solve it. Sadly, seems there is no real way around this. 
+    selenium.runscript ‴return document.getElementsByClassName("captcha-internal").length‴ result ♥len
+    if ♥len=="1"
+        delay 90
+    end
+    -- Click the Networks section
+    selenium.click search /html/body/header/div/nav/ul/li[2]/a by xpath
+    delay 1
+    -- Click the connections link
+    selenium.click search ‴mn-community-summary__entity-info‴ by class
+    delay 1
+    -- Click the search by filter option
+    selenium.click search ‴mn-connections__search-with-filters‴ by class
+    delay 3
+    -- Once that is loaded up, call the GetInput Method
+    call GetInput
+end
+   
+procedure FirstDegreeConnections
+        -- Get the region for the connections such as "India", "England" etc.,
+        dialog.ask ‴Enter the country/region to display‴ result ♥regions
+        delay 1
+        -- Click Locations Dropdown
+        selenium.click search search-s-facet--geoRegion by class
+        delay 1
+        -- Tab into the "Add a Country/region" textbox
+        keyboard ⋘TAB⋙
+        -- Type in the user input
+        keyboard ♥regions
+        delay 2
+        -- from the options that pop up, select the first one by press key down and then pressing enter
+        keyboard ⋘DOWN⋙
+        keyboard ⋘ENTER⋙
+        delay 2
+        keyboard ⋘DOWN⋙
+        keyboard ⋘ENTER⋙
+        -- Click the Apply button
+        selenium.click search //div[6]/div[4]/div/div[1]/header/div/div/div[2]/div/div/div/ul/li[2]/form/div/fieldset/div/div[2]/div/button[2]/span by xpath                       
+        delay 3
+        -- Here we check to see if the result of the filter returned no results or not, 
+        -- the HTML element with the class "search-no-results__container" is displayed when no results that match the critera are found. 
+        -- We use some JS here, the JS script gets elements with that class, since there will be only one element with that class, 
+        -- we check the "len" variables value to see if it's 1, if it is one, then no result for that criteria is found, 
+        -- we then ask the user to re-enter their input, otherwise we just proceed to the next step.
+        selenium.runscript ‴return document.getElementsByClassName("search-no-results__container").length‴ result ♥len
+        delay 3
+        if ♥len=="1"
+            dialog ‴No results found for that criteria! Try again!‴
+            call GetInput
+        end
+        -- Here we get how many results displayed
+        selenium.gettext search ‴search-results__total‴ by class result ♥headerString
+        delay 2
+        -- Here we extract only the numeric values from the text we got form the HTML tag. 
+        text.find ♥headerString regex [0-9] result ♥numberOfConnections
+        dialog.ask ‴There are ♥numberOfConnections connections, how many do you want to send messages to?‴ result ♥sendNum
+        ♥sendNumInt=⟦integer⟧♥sendNum
+        -♥numberInteger=⟦integer⟧♥numberOfConnections
+        if ♥sendNumInt<10
+            for ♥i from 1 to ♥sendNumInt+1
+                selenium.gettext search //div[6]/div[4]/div/div[2]/div/div[2]/div/div/div/div/ul/li[♥i]/div/div/div[2]/a/h3/span/span/span[1] by xpath result ♥name
+                delay 2
+                selenium.gettext search //div[6]/div[4]/div/div[2]/div/div[2]/div/div/div/div/ul/li[♥i]/div/div/div[2]/a/h3/span/span/span[2]/span[2] by xpath result ♥distance
+                if ♥distance=="1st"
+                    list.add list ♥namesList toadd ♥Name
+                end
+            end
+            dialog ♥namesList
+        else if ♥sendNumInt==10
+            for ♥i from 1 to 10
+                selenium.gettext search //div[6]/div[4]/div/div[2]/div/div[2]/div/div/div/div/ul/li[♥i]/div/div/div[2]/a/h3/span/span/span[1] by xpath result ♥name
+                delay 2
+                selenium.gettext search //div[6]/div[4]/div/div[2]/div/div[2]/div/div/div/div/ul/li[♥i]/div/div/div[2]/a/h3/span/span/span[2]/span[2] by xpath result ♥distance
+                if ♥distance=="1st"
+                    list.add list ♥namesList toadd ♥Name
+                end
+            end
+        else
+            ♥numberOfTimesToClickNext=♥sendNumInt/10
+            for ♥i from 1 to ♥numberOfTimesToClickNext
+                for ♥j from 1 to 10
+                    selenium.gettext search //div[6]/div[4]/div/div[2]/div/div[2]/div/div/div/div/ul/li[♥i]/div/div/div[2]/a/h3/span/span/span[1] by xpath result ♥name
+                    delay 2
+                    selenium.gettext search //div[6]/div[4]/div/div[2]/div/div[2]/div/div/div/div/ul/li[♥i]/div/div/div[2]/a/h3/span/span/span[2]/span[2] by xpath result ♥distance
+                    if ♥distance=="1st"
+                        list.add list ♥namesList toadd ♥Name
+                    end
+                 end
+                 delay 1
+                 selenium.click search //div[6]/div[4]/div/div[2]/div/div[2]/div/div/div/div/div[1]/artdeco-pagination/button[2] by xpath
+            end
+         end
+                
+        -dialog ♥namesList
+        
+        
+        -- All the elements are displayed in the form of a list in the HTML Document, so just by changing the "li" part of the xpath, we can access the names of the first degree connections
+        -- we then store those names in a list ♥namesList, which we can use later to type in the names of the connections we want to broadcast messages to.
+
+        --We click the messaging tab Icon here.
+        selenium.click search messaging-tab-icon by id
+        delay 1
+        -selenium.click search /html/body/div[5]/div[6]/div[4]/div[1]/div/div/div[1]/div/div[1]/a[1] by xpath
+        --Here we loadup the LinkedIn's messsage compose URL, because if you have already sent a message to a connection or connections, 
+        --it doesn't show the field to type in the connections name
+        selenium.seturl url https://www.linkedin.com/messaging/compose/
+        -- For each of the connection names in the list, we iterate through them and send a message to them. 
+        foreach ♥name in ♥namesList
+            -- Here We type in the name of the connection we want to sent a message to.
+            selenium.type search msg-connections-typeahead__search-field by class text ♥name
+            delay 3
+            -- Once the name appears below the textbox, we press the down key and hit enter
+            keyboard ⋘DOWN⋙
+            keyboard ⋘ENTER⋙
+            delay 2
+            -- We then click the message body textbox
+            selenium.click search msg-form__msg-content-container--scrollable by class
+            -- This line reads the text file on the desktop containing the generic message we want to send
+            text.read filename ♥environment⟦USERPROFILE⟧/Desktop/GenericMessage.txt result ♥message
+            -- This Line adds a "Hello, " followed by the name of the connection, so it seems personalised in front of the text from the text file.
+            ♥finalMessage=‴Hello, ♥name♥message‴
+            -- We then load ♥finalMessage into the ♥clipboard variable, so it can pasted into the message box field.
+            ♥clipboard = ♥finalMessage
+            keyboard ⋘CTRL+V⋙
+            dialog.ask ‴Do you want to add any attachments to the message? Type "yes" or "no"‴ result ♥attachment
+            if ♥attachment=="yes"
+                selenium.click search //div[6]/div[4]/div[1]/div/div/div[2]/div[4]/form/footer/div[1]/div[2]/button by xpath
+                delay 10
+                -- We check to see if the file too big, if it i too big, the website displays a text in a HTML with the class "msg-attachment-preview__status--error"
+                -- As we saw before, there will be only one such element like that so we check if ♥len is 1, if that is true then we have the robot open up the attachment window once more
+                -- to attach the right file. 
+                selenium.runscript ‴return document.getElementsByClassName("msg-attachment-preview__status--error").length‴ result ♥len
+                if ♥len=="1"
+                    dialog ‴Oh no, Looks the file size is too big! Attach a smaller file‴
+                    selenium.click search remove-attachment by class
+                    selenium.click search //div[6]/div[4]/div[1]/div/div/div[2]/div[4]/form/footer/div[1]/div[2]/button by xpath
+                    delay 10
+                end
+            end
+            
+            -- We click the send button.
+            selenium.click search msg-form__send-button by class
+            call AddLogMessage message ‴Message Sent to: ♥name‴ time ♥time
+            -selenium.click search /html/body/div[5]/div[6]/div[4]/div[1]/div/div/div[1]/div/div[1]/a[1] by class
+            -- We then reset the page to the compose page, for the next iteration. 
+            selenium.seturl url https://www.linkedin.com/messaging/compose/
+            delay 1
+            keyboard ⋘DOWN⋙
+            keyboard ⋘ENTER⋙
+        end
+        dialog.ask ‴Would you like to log out or do you want to send more messages? Type 1 for logging out, 2 for sending more messages‴ result ♥input
+        if ♥input=="1"
+            
+        else if ♥input=="2"
+        
+        end
+end
+
+-- This procedure handles adding the 2nd degree connections
+procedure SecondDegreeConnections
+        -- Click the connections type dropdown
+        selenium.click search search-s-facet__button by class
+        delay 2
+-    selenium.click search /html/body/div[6]/div[6]/div[4]/div/div[1]/header/div/div/div[2]/div/div/div/ul/li[1]/form/div/fieldset/div/ul/li[1] by xpath
+-    selenium.click search /html/body/div[6]/div[6]/div[4]/div/div[1]/header/div/div/div[2]/div/div/div/ul/li[1]/form/div/fieldset/div/ul/li[2] by xpath
+        -- Tab into the first checkbox
+        keyboard ⋘TAB⋙
+        -- Hitting space with the focus on a checkbox, turns it on or off, 
+        -- so we hit space to turn off the currently active 1st degree checkbox since we only want 2nd degree connections
+        keyboard ⋘SPACE⋙
+        -- We hit to tab to select the next check box i.e., 2nd degree checkbox, hitting space makes it active.
+        keyboard ⋘TAB⋙
+        keyboard ⋘SPACE⋙
+        --We then press tab twice to get the focus on the "Apply" button and then press space on it.
+        keyboard ⋘TAB 2⋙
+        keyboard ⋘SPACE⋙
+        delay 2
+        -- Here we check to see if no results are display or not
+        selenium.runscript ‴return document.getElementsByClassName("search-no-results__container").length‴ result ♥len
+        delay 3
+        if ♥len=="1"
+            dialog ‴No results found for that criteria! Try again!‴
+            call GetInput
+        end
+        ----
+        -Entering the region
+        ----
+        dialog.ask ‴Enter the country/region to display‴ result ♥regions
+        -- Here we click the locations dropdown
+        selenium.click search search-s-facet--geoRegion by class
+        delay 2
+        --We then type into Add a country or region textbox and type in the variable ♥regions we got as input from the userS
+        selenium.click search //div[6]/div[4]/div/div[1]/header/div/div/div[2]/div/div/div/ul/li[2]/form/div/fieldset/div/div[1]/div/div/input by xpath
+        selenium.type text ♥regions search //div[6]/div[4]/div/div[1]/header/div/div/div[2]/div/div/div/ul/li[2]/form/div/fieldset/div/div[1]/div/div/input by xpath
+        delay 2
+        -- press down and enter to select the region from the dropdown
+        keyboard ⋘DOWN⋙
+        keyboard ⋘ENTER⋙
+        -- We then click the apply button
+        selenium.click search //div[6]/div[4]/div/div[1]/header/div/div/div[2]/div/div/div/ul/li[2]/form/div/fieldset/div/div[2]/div/button[2]/span by xpath
+        delay 2
+        -selenium.click search facet-collection-list__apply-button by class
+        ----
+        -- here we check to see if no results are display or not
+        delay 3
+        selenium.runscript ‴return document.getElementsByClassName("search-no-results__container").length‴ result ♥len
+        if ♥len=="1"
+            dialog ‴No results found for that criteria! Try again!‴
+            call GetInput
+        end
+        delay 1
+        -- We then get the header string that displays the number of results found
+        selenium.gettext search //div[6]/div[4]/div/div[2]/div/div[2]/div/div/div/div/h3 by xpath result ♥HeaderString
+        -- We extract only the numbers from it
+        text.find ♥HeaderString regex [0-9] result ♥numberOfConnections
+        -- Here we tell the user that you can't directly message 2nd degree connections, so we tell them that they can add them as connections instead
+        dialog.ask ‴2nd degree connections cannot be directly messaged, would you like to add them to your connections? Type "yes" or "no"‴ result ♥inputText
+        if ♥inputText=="yes"
+            --If the user replied "yes", We then tell them how many connections were found in the results, ask them how many they would like to add 
+            dialog.ask ‴There are ♥numberOfConnections connections, how many do you want to add?‴ result ♥numToAdd
+            ♥numberToAdd=⟦integer⟧♥numToAdd
+            -- Here we find the number of times the next button has to be clicked in order to move through the pages of second degree connections, each page displays
+            -- 10 profiles per page, so dividing the number they want to add by 10 gives us the number of pages, 
+            -- it also gives us the number of times we need to click the "Next" Button
+            ♥numberOfTimesToClickNext=♥numberToAdd/10
+            dialog ♥numberOfTimesToClickNext
+            -- If it's just 10 connection that they want, just loop through the xpath, click on the "Connect" for each profile, if it's not accesible, in the case that 
+            -- the user has already added the connection, we just skip past it when it reports an error such a timeout error from selenium because the element is inaccessible.
+            if ♥numberToAdd==10
+                for ♥i from 1 to 10
+                    selenium.click search //div[6]/div[4]/div/div[2]/div/div[2]/div/div/div/div/ul/li[♥i]/div/div/div[3]/div/button by xpath
+                    keyboard ⋘DOWN⋙
+                    delay 1
+                end
+                call AddLogMessage message ‴Ten Connections Added‴ time ♥time
+            -- if it's less than 10, loop until the number specified. 
+            else if ♥numberToAdd<10
+                for ♥i from 1 to ♥numberToAdd
+                    selenium.click search //div[6]/div[4]/div/div[2]/div/div[2]/div/div/div/div/ul/li[♥i]/div/div/div[3]/div/button by xpath
+                    keyboard ⋘DOWN⋙
+                    delay 1
+                 end
+                call AddLogMessage message ‴♥numberToAdd Connections Added‴ time ♥time
+            else
+                -- Otherwise, using two nested loops, we iterate through all the pages, clicking next ♥numberOfTimesToClickNext times and clicking the connect button 10 times per page
+                for ♥j from 1 to ♥numberOfTimesToClickNext
+                    delay 2
+                    for ♥i from 1 to 10
+                        selenium.click search //div[6]/div[4]/div/div[2]/div/div[2]/div/div/div/div/ul/li[♥i]/div/div/div[3]/div/button by xpath
+                        keyboard ⋘DOWN⋙
+                        delay 1
+                    end
+                    delay 1
+                    selenium.click search //div[6]/div[4]/div/div[2]/div/div[2]/div/div/div/div/div[1]/artdeco-pagination/button[2] by xpath
+                end
+             end
+             call AddLogMessage message ‴♥numberToAdd Connections Added‴ time ♥time
+        -- If the user says they don't want to add connections, we ask if they want to send more messages or log out.  
+        else if ♥inputText=="no"
+            dialog.ask ‴Would you like to log out or send more messages? 1 for logging out, 2 for sending more messages‴ result ♥inputText
+            if ♥inputText=="1"
+                selenium.click search nav-settings__dropdown-trigger by id
+                selenium.click search /html/body/header/div/nav/ul/li[6]/div/div/ul/li[5] by xpath
+                call AddLogMessage message ‴User Logged Out‴ time ♥time
+                xlsx.close
+            else if ♥inputText=="2"
+                call GetInput
+            end
+        end
+end    
+
+procedure ProceedNext
+    continue
+end
+    
+procedure AddLogMessage message ‴This is the default message‴ eventTime ♥time
+    xlsx.countrows result ♥rowCount
+    xlsx.setvalue row ♥rowCount+1 colindex 1 value ♥message
+    xlsx.setvalue row ♥rowCount+1 colindex 2 value ♥eventTime
+end
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    

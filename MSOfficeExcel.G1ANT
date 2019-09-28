@@ -1,0 +1,24 @@
+addon msoffice version 4.101.0.0
+addon core version 4.101.0.0
+addon language version 4.103.0.0
+
+excel.open result ♥id1
+excel.open result ♥id2
+excel.switch ♥id1
+keyboard ⋘ALT+TAB⋙
+excel.addsheet ‴New Sheet‴
+excel.setvalue ‴some entry‴ row 1 colindex 1
+excel.addsheet ‴Another Sheet‴
+excel.setvalue 132 row 1 colname ‴A‴
+excel.activatesheet ‴New Sheet‴
+excel.setvalue 1234 row 2 colindex 2
+excel.duplicaterow source 2 destination 5
+excel.getvalue row 2 colindex 2 result ♥value
+excel.activatesheet ‴Another Sheet‴
+excel.setvalue ♥value row 2 colindex 2
+excel.switch ♥id2
+keyboard ⋘ALT+TAB⋙
+-Open Up Test.csv to show contents
+excel.importtext path ♥environment⟦USERPROFILE⟧\Desktop\Test.csv destination C1 delimiter comma
+excel.save ♥environment⟦USERPROFILE⟧\Desktop\imported_data.xlsx
+excel.export ♥environment⟦USERPROFILE⟧\Desktop\Exported.pdf

@@ -1,0 +1,44 @@
+addon xlsx version 4.101.0.0
+addon core version 4.101.0.0
+addon language version 4.103.0.0
+
+list.create ‴‴ result ♥namesList
+list.create ‴‴ result ♥phoneNumberList
+
+xlsx.open ♥environment⟦USERPROFILE⟧/Desktop/Details.xlsx accessmode read result ♥fileOne
+xlsx.open ♥environment⟦USERPROFILE⟧/Desktop/Details2.xlsx accessmode readwrite createifnotexist true result ♥fileTwo
+xlsx.switch ♥fileOne
+xlsx.find value ‴Name‴ resultcolumn ♥colName resultrow ♥rowName
+xlsx.find value ‴Phone Number‴ resultcolumn ♥colPhone resultrow ♥rowPhone
+
+dialog ‴Name Row No.: ♥rowName, Name Column No.: ♥colName‴
+dialog ‴Phone No. Row No.: ♥rowPhone, Phone No. Column No.: ♥colPhone‴
+xlsx.countrows result ♥rowCount
+dialog ‴The number of rows in this file are: ♥rowCount‴
+
+for ♥i from ♥rowName to 6
+    xlsx.getvalue row ♥i colindex 1 result ♥value
+    list.add ♥namesList toadd ♥value
+end
+
+for ♥i from ♥rowName to 6
+    xlsx.getvalue row ♥i colindex 2 result ♥value
+    list.add ♥phoneNumberList toadd ♥value
+end
+
+xlsx.setsheet name ‴Sheet2‴
+xlsx.getvalue row 1 colindex 1 result ♥value
+dialog ‴Text in the second sheet: ♥value‴
+
+xlsx.switch ♥fileTwo
+
+for ♥i from ♥rowName to 6
+    xlsx.setvalue row ♥i colindex 1 value ♥namesList⟦♥i⟧
+end
+
+for ♥i from ♥rowName to 6
+    xlsx.setvalue row ♥i colindex 2 value ♥phoneNumberList⟦♥i⟧
+end
+
+xlsx.close id ♥fileTwo
+xlsx.close id ♥fileOne

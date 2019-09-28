@@ -1,0 +1,35 @@
+addon ui version 4.101.0.0
+addon selenium version 4.101.0.0
+addon core version 4.101.0.0
+addon language version 4.103.0.0
+
+keyboard ⋘WIN+D⋙
+keyboard ⋘CTRL+SHIFT+N⋙
+♥timeNow = ♥time
+keyboard ♥timeNow
+keyboard ⋘SHIFT+LEFT 6⋙
+keyboard ⋘CTRL+C⋙
+keyboard ⋘ENTER⋙
+♥directory=‴C:\Users\Rick Sanchez\Desktop\‴
+
+
+selenium.open chrome url https://arxiv.org/search/
+delay 1
+window title ✱‴Search | arXiv e-print repository‴✱ style maximize
+delay 2
+selenium.click search /html/body/main/div[2]/form/div[1]/div[1] by xpath
+dialog.ask ‴What topic would like to look up?‴ result ♥topic
+keyboard ♥topic 
+keyboard ⋘ENTER⋙
+delay 1
+for ♥i from 1 to 50
+    selenium.getattribute name href search /html/body/main/div[2]/ol/li[♥i]/div/p/span/a[1] by xpath result ♥link
+    selenium.newtab url ♥link
+    keyboard ⋘CTRL+S⋙
+    delay 1
+    keyboard ⋘CTRL+LEFT 2⋙
+    keyboard ‴♥directory♥clipboard\‴
+    delay 1
+    keyboard ⋘ENTER⋙
+    selenium.closetab
+end

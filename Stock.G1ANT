@@ -1,0 +1,51 @@
+addon msoffice version 4.101.0.0
+addon selenium version 4.101.0.0
+addon core version 4.101.0.0
+addon language version 4.103.0.0
+
+
+♥timeoutselenium = 25000
+list.create ‴‴ separator ❚ result ♥datesList
+list.create ‴‴ separator ❚ result ♥openValues
+
+selenium.open chrome url finance.yahoo.com
+delay 2
+keyboard ⋘TAB 11⋙
+dialog.ask ‴Enter the company's name here:‴ result ♥companyName
+keyboard ♥companyName
+keyboard ⋘ENTER⋙
+selenium.click search /html/body/div[1]/div/div/div[1]/div/div[2]/div/div/div[5]/section/div/ul/li[5]/a/span by xpath
+call getLastTenDates
+call getLastTenOpenValues
+call enterIntoExcel
+
+--Definttions
+
+procedure getLastTenDates
+    for ♥i from 1 to 11
+        selenium.gettext search /html/body/div[1]/div/div/div[1]/div/div[3]/div[1]/div/div[2]/section/div[2]/table/tbody/tr[♥i]/td[1]/span by xpath result ♥dateRowValue
+        list.add ♥datesList toadd ♥dateRowValue timeout 25000
+    end
+end
+
+procedure getLastTenOpenValues
+    for ♥i from 1 to 11
+        selenium.gettext search /html/body/div[1]/div/div/div[1]/div/div[3]/div[1]/div/div[2]/section/div[2]/table/tbody/tr[♥i]/td[2]/span by xpath result ♥OpenRowValue
+        list.add ♥openValues toadd ♥OpenRowValue timeout 25000
+    end
+end
+
+procedure enterIntoExcel
+    excel.open
+    excel.setvalue row 1 colname A value ‴Date‴
+    excel.setvalue colname B row 1 value ‴Open Value‴
+    for ♥i from 2 to 11
+        excel.setvalue row ♥i colname A value ♥datesList⟦♥i⟧
+    end
+    
+    for ♥i from 2 to 11
+        excel.setvalue row ♥i colname B value ♥openValues⟦♥i⟧
+    end
+    excel.save ‴C:\Users\Rick Sanchez\Desktop\♥companyName.xlsx‴
+    excel.close
+end

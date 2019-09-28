@@ -1,0 +1,18 @@
+addon iexplorer version 4.102.0.0
+addon core version 4.101.0.0
+addon language version 4.103.0.0
+
+ie.open google.com
+ie.setattribute ‴value‴ search q by name value ‴Weather in chennai‴
+keyboard ⋘ENTER⋙
+ie.runscript ‴document.getElementById("wob_tm").innerHTML‴ result ♥tempGoogle
+dialog ‴The temperature is ♥tempGoogle C‴
+ie.seturl duckduckgo.com
+ie.setattribute ‴value‴ search search_form_input_homepage by id value ‴Weather in chennai‴
+delay 1
+keyboard ⋘ENTER⋙
+delay 3
+ie.runscript ‴document.getElementsByClassName("module__humidity")[0].innerHTML‴ result ♥tempDuckDuckGo
+dialog ‴The Humidity is ♥tempDuckDuckGo‴
+
+-timeoutie variable

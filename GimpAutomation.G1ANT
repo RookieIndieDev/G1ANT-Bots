@@ -1,0 +1,58 @@
+addon ui version 4.101.0.0
+addon core version 4.101.0.0
+addon language version 4.103.0.0
+
+♥savedirectory= ‴E:\GeneralDev\DST\Data\Cropped\‴
+♥filename=game
+♥iteration = ⟦integer⟧97
+
+call StartGimp
+while ⊂♥iteration < 8167⊃
+    ♥iteration = ♥iteration + 1
+    call OpenAndCropImages iter ♥iteration
+end
+
+procedure StartGimp
+keyboard ⋘WIN⋙gimp⋘ENTER⋙
+waitfor.ui ‴/ui[@name='GNU Image Manipulation Program']/descendant::ui[@id='MenuBar']/ui[@name='System']‴ timeout 40000
+end
+
+procedure OpenAndCropImages iter
+    ♥iter=⟦integer⟧♥iter
+    if ♥iter<10
+        ♥fileno=‴0000♥iter‴
+    else if ♥iter<100
+        ♥fileno=‴000♥iter‴
+    else if ♥iter<1000
+        ♥fileno=‴00♥iter‴
+    else
+        ♥fileno=‴0♥iter‴
+    end
+    
+    ♥clipboard = ‴E:\GeneralDev\DST\Data\♥filename♥fileno.png‴
+    keyboard ⋘ALT+F⋙
+    keyboard ⋘DOWN 4⋙
+    keyboard ⋘ENTER⋙
+    delay 1
+    keyboard ⋘CTRL+V⋙
+    delay 1
+    keyboard ⋘ENTER⋙
+    delay 1
+    keyboard ⋘ALT+S⋙
+    keyboard ⋘ENTER⋙
+    keyboard ⋘ALT+D⋙
+    keyboard ⋘ENTER⋙
+    delay 3
+    keyboard ⋘ALT+BS⋙
+    keyboard ⋘SHIFT+CTRL+E⋙
+    delay 10
+    keyboard ♥savedirectory+♥filename+♥fileno
+    keyboard ⋘ENTER⋙
+    delay 5
+    keyboard ⋘ENTER⋙
+    delay 2
+    keyboard ⋘CTRL+W⋙
+    keyboard ⋘LEFT⋙
+    keyboard ⋘ENTER⋙
+end
+

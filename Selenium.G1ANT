@@ -1,0 +1,43 @@
+addon selenium version 4.101.0.0
+addon core version 4.101.0.0
+addon language version 4.103.0.0
+
+selenium.open chrome url g1ant.com result ♥id1
+window title ✱G1ANT✱ style maximize
+selenium.gettitle result ♥title
+delay 1
+dialog ♥title
+selenium.newtab google.com
+selenium.type text ‴Who invented nitric acid?‴ search q by name
+selenium.presskey enter search q by name
+selenium.gettext search Z0LcW by class result ♥name
+dialog ♥name
+selenium.open chrome url duckduckgo.com result ♥id2
+window title ✱‴DuckDuckGo — Privacy, simplified.‴✱
+selenium.getattribute class search logo_homepage_link by id result ♥classname
+dialog ‴Logo Class Name: ♥classname‴
+selenium.runscript ‴document.getElementsByClassName("tag-home__item")[0].innerHTML = "This was changed by a software robot!"‴
+delay 5
+selenium.refresh
+delay 2
+selenium.switch ♥id1
+selenium.activatetab search g1ant by url
+selenium.click search //*[@id="navbarSupportedContent"]/div/ul/li[1]/a by xpath
+delay 3
+selenium.closetab
+delay 3
+selenium.switch ♥id2
+delay 3
+selenium.close
+selenium.switch ♥id1
+selenium.seturl msn.com
+selenium.waitforvalue ‴return document.querySelectorAll('input[name=q]').length > 0‴ expectedvalue true timeout 20000
+delay 2
+selenium.setattribute name ‴value‴ value ‴weather in chennai‴ search q by name
+delay 1
+selenium.presskey enter search q by name
+delay 4
+selenium.close
+
+-variables
+-timeoutselenium default 10000 ms or 10 seconds, time out for all selenium commands
